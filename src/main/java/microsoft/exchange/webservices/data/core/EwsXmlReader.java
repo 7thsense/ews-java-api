@@ -23,11 +23,14 @@
 
 package microsoft.exchange.webservices.data.core;
 
+import com.github.rwitzel.streamflyer.core.ModifyingReader;
+import microsoft.exchange.webservices.data.util.XmlVersionModifier;
 import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,13 +46,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 /**
  * Defines the EwsXmlReader class.
@@ -99,7 +96,13 @@ public class EwsXmlReader {
     XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
-    return inputFactory.createXMLEventReader(stream);
+    // force all documents to be 1.1 compliant to allow unicode control
+    // characters to pass through instead of throwing parse errors
+    Reader reader = new XmlStreamReader(stream);
+    ModifyingReader modifyingReader = new ModifyingReader(reader,
+        new XmlVersionModifier("1.1", 8192));
+    return inputFactory.createXMLEventReader(modifyingReader);
+    //return inputFactory.createXMLEventReader(stream);
   }
 
 
