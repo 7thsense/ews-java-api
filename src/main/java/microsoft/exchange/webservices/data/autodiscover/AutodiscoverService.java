@@ -457,11 +457,10 @@ public class AutodiscoverService extends ExchangeServiceBase
           redirectUrl.setParam(new URI(location));
 
           // Check if URL is SSL and that the path matches.
-          if ((redirectUrl.getParam().getScheme().toLowerCase()
-              .equals("https")) &&
-              (redirectUrl.getParam().getPath()
-                  .equalsIgnoreCase(
-                      AutodiscoverLegacyPath))) {
+          if (((redirectUrl.getParam() != null) &&
+               (redirectUrl.getParam().getScheme() != null) &&
+               redirectUrl.getParam().getScheme().toLowerCase().equals("https")) &&
+              (redirectUrl.getParam().getPath().equalsIgnoreCase(AutodiscoverLegacyPath))) {
             this.traceMessage(TraceFlags.AutodiscoverConfiguration,
                 String.format("Redirection URL found: '%s'",
                     redirectUrl.getParam().toString()));
@@ -1592,7 +1591,7 @@ public class AutodiscoverService extends ExchangeServiceBase
             AutodiscoverWsSecurityEnabledHeaderName).isEmpty())) {
       endpoints.add(AutodiscoverEndpoints.WsSecurity);
     }
-		
+
 		/* if (! (request.getResponseHeaders().get(
 				 AutodiscoverWsSecuritySymmetricKeyEnabledHeaderName) !=null || request
 				 .getResponseHeaders().get(
@@ -1604,7 +1603,7 @@ public class AutodiscoverService extends ExchangeServiceBase
         		 AutodiscoverWsSecurityX509CertEnabledHeaderName)!=null ||
         		 request.getResponseHeaders().get(
                 		 AutodiscoverWsSecurityX509CertEnabledHeaderName).isEmpty()))
-        		 
+
          {
              endpoints .add(AutodiscoverEndpoints.WSSecurityX509Cert);
          }*/
