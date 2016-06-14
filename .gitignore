@@ -27,3 +27,7 @@
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
+
+# sbt build files
+/project/project
+/project/target
